@@ -100,6 +100,3 @@ class DBStorage:
     def session(self):
         """Expose the session"""
         return self.__session
-        
-
-        
