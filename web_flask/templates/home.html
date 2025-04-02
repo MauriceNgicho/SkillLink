@@ -9,7 +9,18 @@
 
     {% if user.is_authenticated %}
     <div class="text-center">
-        <a href="{{ url_for('course.list_courses') }}" class="btn btn-primary">Browse Courses</a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                Browse Courses
+            </button>
+            <div class="dropdown-menu">
+                {% for course in courses %}
+                <a class="dropdown-item" href="{{ url_for('course.view_course', course_id=course.id) }}">
+                    {{ course.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
     {% else %}
     <div class="text-center">

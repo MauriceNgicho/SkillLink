@@ -1,3 +1,4 @@
+
 from dotenv import load_dotenv
 import os
 from flask import Flask
@@ -49,6 +50,9 @@ def create_app():
 
     from web_flask.routes.course import course as course_blueprint
     app.register_blueprint(course_blueprint, url_prefix="/course")
+
+    from web_flask.routes.lesson import lesson as lesson_blueprint
+    app.register_blueprint(lesson_blueprint, url_prefix="/lesson")
 
 
 
