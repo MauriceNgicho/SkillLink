@@ -1,11 +1,11 @@
 """A class user that inherits from BaseModel"""
 from models.base_model import BaseModel,Base
 from os import getenv
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.exc import IntegrityError
 from flask_login import UserMixin
-#from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(UserMixin, BaseModel, Base):
@@ -17,12 +17,12 @@ class User(UserMixin, BaseModel, Base):
         __tablename__ = 'users'
         id = Column(String(60), primary_key=True, nullable=False)
         email = Column(String(128), nullable=False, unique=True)
-        password = Column(String(255), nullable=False)
+        password_hash= Column(String(255), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
 
         # Relationship: 
-        courses = relationship('Course', back_populates='user', cascade='all, delete')
+        courses = relationship('Course', backref='user', cascade='all, delete')
     else:
         id = ""
         email = ""
@@ -38,11 +38,11 @@ class User(UserMixin, BaseModel, Base):
 
     def set_password(self, plain_text_password):
         """Hashes and sets the password"""
-        self.password = plain_text_password
+        self.password_hash = generate_password_hash(plain_text_password)
 
     def check_password(self, password):
         """Checks if password matches plain text password"""
-        return self.password == password
+        return check_password_hash(self.password_hash, password)
     
     def get_id(self):
         """Return the user ID for session management"""
@@ -52,7 +52,7 @@ class User(UserMixin, BaseModel, Base):
     def create(cls, email, password, first_name=None, last_name=None):
         """Create a new user with email uniqueness check"""
         from models import storage
-        if storage.session.query(User).filter_by(email=email).first():
+        if storage.get(User, email=email):
             raise ValueError("Email is already registered!")
 
         new_user = cls(email=email, password=password, first_name=first_name, last_name=last_name)
