@@ -1,8 +1,7 @@
 """A class Course that inherits from BaseModel"""
-import models
 from models.base_model import BaseModel, Base
 from os import getenv
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -17,8 +16,7 @@ class Course(BaseModel, Base):
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
 
         # Relationship: A course belongs to a user and has many lessons
-        user = relationship('User', back_populates='courses')
-        lessons = relationship('Lesson', back_populates='course', cascade='all, delete')
+        lessons = relationship('Lesson', backref='course', cascade='all, delete')
 
     else:
         id = ""
