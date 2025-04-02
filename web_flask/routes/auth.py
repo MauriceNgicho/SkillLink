@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import storage
-#from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user,logout_user, login_required, current_user
 from web_flask.forms import LoginForm, SignUpForm
 from models.user import User
@@ -19,8 +19,8 @@ def login():
         # Query user by email
         user = storage.session.query(User).filter_by(email=email).first()
 
-        if user and user.password == password:
-        #if user and check_password_hash(user._password, password):
+        #if user and user.password == password:
+        if user and check_password_hash(user.password_hash, password):
             login_user(user, remember=True)
             flash("Login successful!", "success")
             return redirect(url_for("main.home"))
@@ -40,12 +40,13 @@ def logout():
 def sign_up():
     """Handles user registration"""
     form = SignUpForm()
-    if request.method == "POST":
-        email = request.form.get("email")
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirm_password")
+    if form.validate_on_submit():
+        email = form.email.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        password = form.password.data
+        #confirm_password = request.form.get("confirm_password")
+        confirm_password = form.confirm_password.data
 
         # Query user by email to check if already exists
         existing_user = storage.session.query(User).filter_by(email=email).first()
@@ -55,11 +56,13 @@ def sign_up():
         elif password != confirm_password:
             flash("Passwords do not match.", category="error")
         else:
-            new_user = User(email=email, first_name=first_name, last_name=last_name, password=password)
+            hashed_password = generate_password_hash(password)
+            new_user = User(email=email, first_name=first_name, last_name=last_name, password_hash=hashed_password)
 
             storage.new(new_user)
             storage.save()
+            login_user(new_user) # Auto-login after signup
             flash("Account created!", category="success")
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("main.home"))
 
     return render_template("sign_up.html", user=current_user, form=form)
