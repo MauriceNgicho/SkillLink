@@ -2,6 +2,7 @@
 .venv/
 __pycache__/
 *.pyc
+*.env
 
 # Ignore database files
 *.db
@@ -9,5 +10,13 @@ instance/
 
 # Ignore environment variables
 .env
+*.env
+file.json
 
-.env
+# __pyche__folders
+migrations/__pycache__/
+migrations/versions/__pycache__/
+models/__pycache__/
+models/engine/__pycache__/
+web_flask/__pycache__/
+web_flask/routes/__pycache__/
