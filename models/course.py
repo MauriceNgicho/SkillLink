@@ -1,7 +1,7 @@
 """A class Course that inherits from BaseModel"""
 from models.base_model import BaseModel, Base
 from os import getenv
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 
@@ -27,8 +27,3 @@ class Course(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """Initialize Course attributes"""
         super().__init__(*args, **kwargs)
-
-    #def add_lesson(self, lesson_id):
-     #   """Adds a lesson to the course"""
-      #  if lesson_id not in self.lesson_ids:
-       #     self.lesson_ids.append(lesson_id)
