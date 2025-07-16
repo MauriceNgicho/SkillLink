@@ -1,5 +1,5 @@
 SkillLink
-🚀 A corporate e-learning platform built with Flask, SQLAlchemy, and Alembic.
+> A corporate e-learning backend system supporting role-based access, course creation, and progress tracking.
 
 📌 About the Project
 SkillLink is a corporate e-learning platform that enables companies to manage training programs, track progress, and facilitate knowledge sharing among employees.
